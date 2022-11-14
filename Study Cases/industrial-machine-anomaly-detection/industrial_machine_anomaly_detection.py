@@ -6,7 +6,7 @@
 
 import numpy as np
 from shapelets.apps import DataApp
-from shapelets.model import Collection, Sequence
+from shapelets.model import Sequence
 from shapelets.model.view_match import View
 import time
 import pandas as pd
