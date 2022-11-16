@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="https://shapelets.io/wp-content/uploads/2021/04/Shapelets-Horizontal-.png"><br>
+  <img src="https://shapelets.io/wp-content/uploads/2022/11/Shapelets-Horizontal-Color-RGB.png"><br>
 </div>
 
 
