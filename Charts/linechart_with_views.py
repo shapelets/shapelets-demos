@@ -12,7 +12,7 @@ from shapelets.apps.widgets import View
 app = DataApp(name="linechart_with_views")
 
 # Load data from csv
-df = pd.read_csv('../resources/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
+df = pd.read_csv('../Resources/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 
 # Set index
 df.index = pd.to_datetime(df.index, unit='s')
@@ -21,7 +21,7 @@ df.index = pd.to_datetime(df.index, unit='s')
 view = View(1000,2000)
 
 # Create linechart and add view
-line_chart1 = app.line_chart(title='MLII', value=df['MLII'], views=[view])
+line_chart1 = app.line_chart(title='MLII', data=df['MLII'], views=[view])
 
 # Add linechart to data app
 app.place(line_chart1)
