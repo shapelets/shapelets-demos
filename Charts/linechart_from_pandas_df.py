@@ -15,7 +15,7 @@ data = {"series1":[420, 380, 390]}
 df = pd.DataFrame(data=data, index=range(len(data["series1"])))
 
 # Create line chart widget and plot df
-lc = app.line_chart(value=df, title="My title")
+lc = app.line_chart(data=df, title="My title")
 
 # Place line chart widget
 app.place(lc)
