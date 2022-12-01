@@ -18,20 +18,20 @@ max_date = datetime.date(2023, 1, 28)
 
 # Create selector based on datetime objects
 dateSelector1 = app.datetime_range_selector("selector from datetime", 
-    start_date_time=start_date, 
-    end_date_time=end_date, 
-    min_date=min_date, 
-    max_date=max_date)
+    start_datetime=start_date, 
+    end_datetime=end_date, 
+    min_datetime=min_date, 
+    max_datetime=max_date)
 
 # Place selector in data app
 app.place(dateSelector1)
 
 # Create selector based on ISO date/time strings
 dateSelector2 = app.datetime_range_selector("selector from string", 
-    start_date_time="2019-02-15 08:15:00", 
-    end_date_time="2020-01-10 18:32:55", 
-    min_date="2015-02-15", 
-    max_date="2025-01-10")
+    start_datetime="2019-02-15 08:15:00", 
+    end_datetime="2020-01-10 18:32:55", 
+    min_datetime="2015-02-15", 
+    max_datetime="2025-01-10")
 
 # Place selector in data app    
 app.place(dateSelector2)

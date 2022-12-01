@@ -12,7 +12,7 @@ app = DataApp("display_image_file")
 
 # path to the image
 currentDirectory = Path(__file__).parent.resolve()
-resDirectory = currentDirectory.joinpath("../resources")
+resDirectory = currentDirectory.joinpath("../Resources")
 img_path = resDirectory / "hello.jpg"
 
 # Create an image widget
