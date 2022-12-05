@@ -20,18 +20,18 @@ app = DataApp(
 )
 
 # Load data
-df = pd.read_csv("Use cases/spain-energy-price-prediction/data/data.csv")
+df = pd.read_csv("data/data.csv")
 df.datetime = pd.to_datetime(df.datetime)
 df = df.set_index('datetime')
 
-df_price = pd.read_csv("Use cases/spain-energy-price-prediction/data/spot_esp_20150101_20220415.csv")
+df_price = pd.read_csv("data/spot_esp_20150101_20220415.csv")
 df_price = df_price[:-1]
 df_price.timestamp = pd.to_datetime(df_price.timestamp)
 df_price = df_price.set_index('timestamp')
 
 df['price'] = df_price.SPOTPRICE_españa
 
-df_real = pd.read_csv("Use cases/spain-energy-price-prediction/data/data_treal.csv")
+df_real = pd.read_csv("data/data_treal.csv")
 df_real.datetime = pd.to_datetime(df_real.datetime)
 df_real = df_real.set_index('datetime')
 
