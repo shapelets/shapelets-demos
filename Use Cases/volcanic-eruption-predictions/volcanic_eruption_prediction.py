@@ -6,9 +6,10 @@
 
 # Shapelets imports
 from shapelets.apps import DataApp
-from shapelets.model import Dataframe, Capsule, Image
+from shapelets.model import Capsule, Image
 
 # Other imports
+from pandas import Dataframe
 from datetime import datetime
 import pandas as pd
 import pickle
