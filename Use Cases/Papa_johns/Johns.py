@@ -48,7 +48,9 @@ vf2.place(app.text("""
 app.place(tabs_fp)
 
 # create a function that will group by postalCode plot it and return the result
-def plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image :
+def plot_by_postalCode(papa_person_group: DataFrame, selector: str)-> Image :
+
+    selector = int(selector)
 
     # Create smaller dataframe to split some categories
     one = papa_person_group.iloc[:,84+10:]
@@ -89,6 +91,8 @@ def plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image :
     ag=age.plot(kind='bar', figsize=(10, 6))
     hou=household.plot(kind='bar', figsize=(10, 6))
     lef=leftover.plot(kind='bar', figsize=(10, 6))
+
+    return Image(inc)
     # get inc into an image 
     img1 = app.image(inc)
     img2 = app.image(lan)
@@ -148,6 +152,8 @@ def cat_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image 
     hou = sns.catplot(data=household, kind="bar", height=6, aspect=2, orient='h')
     lef = sns.catplot(data=leftover, kind="bar", height=6, aspect=2, orient='h')
     
+    return Image(inc)
+
     # get inc into an image 
     img1 = app.image(inc)
     img2 = app.image(lan)
@@ -204,8 +210,10 @@ def box_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image 
     empg = employement_group.plot(kind='box', figsize=(8, 6), vert=False)
     ag = age.plot(kind='box', figsize=(8, 6), vert=False)
     hou = household.plot(kind='box', figsize=(8, 6), vert=False)
-    lef = leftover.plot(kind='box', figsize=(8, 6), vert=False)
-        
+    lef = leftover.plot(kind='box', figsize=(8, 6), vert=False) 
+
+    return Image(inc)
+
     # get inc into an image 
     img1 = app.image(inc)
     img2 = app.image(lan)
@@ -223,7 +231,6 @@ def box_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image 
     return vf.place(img1), vf.place(img2),vf.place(img3),vf.place(img4),vf.place(img5),vf.place(img6),vf.place(img7),vf.place(img8),vf.place(img9),vf.place(img10),vf.place(img11)
 
 def hist_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image :
-
     # Create smaller dataframe to split some categories
     one = papa_person_group.iloc[:,84+10:]
     two = papa_person_group.iloc[:,41+10:44+10]
@@ -263,7 +270,8 @@ def hist_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image
     ag = age.plot(kind='hist', figsize=(10, 6), bins=50)
     hou = household.plot(kind='hist', figsize=(10, 6), bins=50)
     lef = leftover.plot(kind='hist', figsize=(10, 6), bins=50)
-        
+
+    return Image(inc)    
     # get inc into an image 
     img1 = app.image(inc)
     img2 = app.image(lan)
@@ -281,6 +289,9 @@ def hist_plot_by_postalCode(papa_person_group: DataFrame, selector: int)-> Image
     return vf.place(img1), vf.place(img2),vf.place(img3),vf.place(img4),vf.place(img5),vf.place(img6),vf.place(img7),vf.place(img8),vf.place(img9),vf.place(img10),vf.place(img11)
 
 def folium_map(papa_person: DataFrame, selector: int)-> FoliumChart :
+
+    print("hello")
+    return FoliumChart()
 
     # Folium map
     # create a map of Miami
@@ -337,7 +348,7 @@ def folium_map(papa_person: DataFrame, selector: int)-> FoliumChart :
     
 
 # import the full data csv file
-papa_person = pd.read_csv('/root/Papa_johns/papa_person.csv')
+papa_person = pd.read_csv('Papa_johns/papa_person.csv')
 
 
 papa_person_group = papa_person.groupby("postalCode").mean()
@@ -351,29 +362,31 @@ image = app.image()
 # create a button for the plot
 button_plot = app.button("trigger the computation of the plot")
 vf.place(button_plot)
-image.bind(plot_by_postalCode, selector ,triggers= [button_plot])
+image.bind(plot_by_postalCode,papa_person, selector,triggers= [button_plot])
+vf.place(image)
 
+'''
 # create a button for the plot
 button_cat = app.button("trigger the computation of the catplot")
 vf.place(button_cat)
-image.bind(cat_plot_by_postalCode, selector ,triggers= [button_cat])
+image.bind(cat_plot_by_postalCode,papa_person, selector ,triggers= [button_cat])
 
 # create a button for the box plot
 button_box = app.button("trigger the computation of the box plot")
 vf.place(button_box)
-image.bind(box_plot_by_postalCode, selector ,triggers= [button_box])
+image.bind(box_plot_by_postalCode,papa_person, selector ,triggers= [button_box])
 
 # create a button for the plot
 button_hist = app.button("trigger the computation of the histogram")
 vf.place(button_hist)
-image.bind(hist_plot_by_postalCode, selector ,triggers= [button_hist])
+image.bind(hist_plot_by_postalCode,papa_person, selector ,triggers= [button_hist])
 
 # create a button for the folium map
 map = app.folium_chart()
 button_folium = app.button("trigger the computation of the map")
 vf.place(button_folium)
-map.bind(folium_map, triggers= [button_folium])
-
+map.bind(folium_map, papa_person, selector, triggers= [button_folium])
+'''
 # ## Take-away
 # * There are more Spanish speaking home
 # * There are equal amount of people married and never married 
@@ -438,7 +451,7 @@ vf2.place(app.text("""
     We will split our dataset into training and test sets (70% - 30% of the data) and we used a regression analysis: 
 """, markdown=True))
 # import papa_person.csv
-papa_person = pd.read_csv('/root/Papa_johns/papa_person.csv')
+papa_person = pd.read_csv('Papa_johns/papa_person.csv')
 # get only where name is Papa John's Pizza
 papa_johns = papa_person[papa_person['name'] == "Papa John's Pizza"]
 
@@ -503,7 +516,6 @@ plt.xlabel('True Values')
 plt.ylabel('Predictions')
 plt.title('Model Predictions')
 plt.legend()
-plt.show()
 
 img = app.image(fig)
 vf2.place(img)
