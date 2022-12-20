@@ -16,7 +16,7 @@ import xgboost as xgb
 app = DataApp(
     name="Use Case REE",
     description="An example on how to predict the hourly price of electricity in the Spanish market",
-    version=1.0
+    version=(1,0)
 )
 
 # Load data
@@ -143,37 +143,37 @@ app.place(tabs_fp)
 tab1 = app.vertical_layout()
 tabs_fp.add_tab("Spot Price",tab1)
 
-line_chart1 = app.line_chart(title='Price', value=df['price'])
+line_chart1 = app.line_chart(title='Price', data=df['price'])
 tab1.place(line_chart1)
 
 tab2 = app.vertical_layout()
 tabs_fp.add_tab("Nuclear Energy",tab2)
 
-line_chart2 = app.line_chart(title='GP_Nuclear', value=df['GP_Nuclear'])
+line_chart2 = app.line_chart(title='GP_Nuclear', data=df['GP_Nuclear'])
 tab2.place(line_chart2)
 
 tab3 = app.vertical_layout()
 tabs_fp.add_tab("Hidraulic Energy",tab3)
 
-line_chart3 = app.line_chart(title='GP_Hidraulica', value=df['GP_Hidraulica'])
+line_chart3 = app.line_chart(title='GP_Hidraulica', data=df['GP_Hidraulica'])
 tab3.place(line_chart3)
 
 tab4 = app.vertical_layout()
 tabs_fp.add_tab("Eólica Energy",tab4)
 
-line_chart4 = app.line_chart(title='GP_Eolica', value=df['GP_Eolica'])
+line_chart4 = app.line_chart(title='GP_Eolica', data=df['GP_Eolica'])
 tab4.place(line_chart4)
 
 tab5 = app.vertical_layout()
 tabs_fp.add_tab("Combined Cycle Energy",tab5)
 
-line_chart5 = app.line_chart(title='GP_Ciclo_Combinado', value=df['GP_Ciclo_Combinado'])
+line_chart5 = app.line_chart(title='GP_Ciclo_Combinado', data=df['GP_Ciclo_Combinado'])
 tab5.place(line_chart5)
 
 tab6 = app.vertical_layout()
 tabs_fp.add_tab("Cogeneracion Energy",tab6)
 
-line_chart6 = app.line_chart(title='GP_Cogeneracion', value=df['GP_Cogeneracion'])
+line_chart6 = app.line_chart(title='GP_Cogeneracion', data=df['GP_Cogeneracion'])
 tab6.place(line_chart6)
 
 # Create tabs layout
@@ -184,25 +184,25 @@ app.place(tabs_fp)
 tab1 = app.vertical_layout()
 tabs_fp.add_tab("Demanda real",tab1)
 
-line_chart1 = app.line_chart(title='demanda_real', value=df_real['demanda_real'])
+line_chart1 = app.line_chart(title='demanda_real', data=df_real['demanda_real'])
 tab1.place(line_chart1)
 
 tab2 = app.vertical_layout()
 tabs_fp.add_tab("GTReal hidráulica",tab2)
 
-line_chart2 = app.line_chart(title='GTR_hidraulica', value=df_real['GTR_hidraulica'])
+line_chart2 = app.line_chart(title='GTR_hidraulica', data=df_real['GTR_hidraulica'])
 tab2.place(line_chart2)
 
 tab3 = app.vertical_layout()
 tabs_fp.add_tab("GTReal nuclear",tab3)
 
-line_chart3 = app.line_chart(title='GTR_nuclear', value=df_real['GTR_nuclear'])
+line_chart3 = app.line_chart(title='GTR_nuclear', data=df_real['GTR_nuclear'])
 tab3.place(line_chart3)
 
 tab4 = app.vertical_layout()
 tabs_fp.add_tab("GTReal ciclo combinado",tab4)
 
-line_chart4 = app.line_chart(title='GTR_ciclo_combinado', value=df_real['GTR_ciclo_combinado'])
+line_chart4 = app.line_chart(title='GTR_ciclo_combinado', data=df_real['GTR_ciclo_combinado'])
 tab4.place(line_chart4)
 
 app.place(app.text("""
@@ -593,7 +593,7 @@ slider = app.slider(title="Select a day", min_value=1, max_value=14, step=1, val
 app.place(slider)
 #hf.place(slider)#,width=9)
 
-selector = app.selector(value=["All Models"], 
+selector = app.selector(default=["All Models"], 
     options=["All Models", "RandomForestRegressor", "LightGBM", "XGBoost"])
 app.place(selector)
 
