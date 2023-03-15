@@ -74,7 +74,7 @@ age = papa_person_group.iloc[:,69+10:84+10]
 leftover = papa_person_group.iloc[:,0+10:4+10]
 cat={"Population":population, "Language":language, "Married":married, "Male Female":male_female, "Household":household, "Income":income, "Education":education, "Employement":employment, "Employement Group":employment_group, "Age":age, "Leftover":leftover}
 
-def full_bar(cat: dict, selector: str, selector_cat: str) -> AltairChart:
+def full_bar(cat: dict, selector_cat: str) -> AltairChart:
     cat = cat[selector_cat]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
 
@@ -88,7 +88,7 @@ def full_bar(cat: dict, selector: str, selector_cat: str) -> AltairChart:
 
     return app.altair_chart(chart=chart)
 
-def full_box(cat: DataFrame,selector:str ,selector_cat: str)-> AltairChart :
+def full_box(cat: dict,selector_cat: str)-> AltairChart :
     cat = cat[selector_cat]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
 
@@ -99,7 +99,7 @@ def full_box(cat: DataFrame,selector:str ,selector_cat: str)-> AltairChart :
     ).properties(width=600, height=400, title='Box plot by Feature').interactive()
     return app.altair_chart(chart=chart)
 
-def full_hist(cat: dict, selector: str, selector_cat: str) -> AltairChart:
+def full_hist(cat: dict,selector_cat: str) -> AltairChart:
     cat = cat[selector_cat]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
     melted_population_no_pc = melted_cat[melted_cat['Feature'] != 'postalCode']
@@ -113,8 +113,8 @@ def full_hist(cat: dict, selector: str, selector_cat: str) -> AltairChart:
 
     return app.altair_chart(chart=chart)
 
-def part_bar(cat: DataFrame,selector: str,selector_cat: str)-> AltairChart :
-    selector = int(selector)
+def part_bar(cat: dict,selector: int,selector_cat: str)-> AltairChart :
+    
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
@@ -129,21 +129,26 @@ def part_bar(cat: DataFrame,selector: str,selector_cat: str)-> AltairChart :
 
     return app.altair_chart(chart=chart)
 
-def part_box(cat:DataFrame,selector: str,selector_cat: str)-> AltairChart :
-    selector = int(selector)
+def part_box(cat:dict,selector: int,selector_cat: str)-> AltairChart :
+    
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
 
     # create box plot
-    chart = alt.Chart(melted_cat[melted_cat['Feature'] != 'postalCode']).mark_boxplot().encode(
+    box = alt.Chart(melted_cat).mark_boxplot().encode(
         y='Count:Q',
-        x='Feature:N'
-    ).properties(width=600, height=400, title='Box plot by Feature').interactive()
+        x=alt.X('Feature:N', axis=alt.Axis(title='Feature')),
+    )
+
+    points = alt.Chart(melted_cat).mark_circle(opacity=0.5, size=30).encode(
+        y='Count:Q',
+        x=alt.X('Feature:N', axis=alt.Axis(title='Feature')),
+    )
+    chart = (box + points).properties(width=600, height=400, title='Box plot by Feature')
     return app.altair_chart(chart=chart)
 
-def part_hist(cat:DataFrame,selector: str,selector_cat: str)-> AltairChart :
-    selector = int(selector)
+def part_hist(cat:dict,selector: int,selector_cat: str)-> AltairChart :
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
@@ -158,8 +163,7 @@ def part_hist(cat:DataFrame,selector: str,selector_cat: str)-> AltairChart :
 
     return app.altair_chart(chart=chart)
 
-def folium_map(papa_person: DataFrame, selector: str)-> FoliumChart :
-    selector = int(selector)
+def folium_map(papa_person: DataFrame, selector: int)-> FoliumChart :
     # Folium map
     # create a map of Miami
     l=folium.Map(location = [25.761681
@@ -201,11 +205,11 @@ map = app.folium_chart(title= "Map of Miami's Restaurants", folium=l)
 map.bind(folium_map,papa_person, selector)
 
 image_full_bar = app.altair_chart()
-image_full_bar.bind(full_bar, cat, selector, selector_cat)
+image_full_bar.bind(full_bar, cat, selector_cat)
 image_full_box= app.altair_chart()
-image_full_box.bind(full_box, cat, selector, selector_cat)
+image_full_box.bind(full_box, cat, selector_cat)
 image_full_hist = app.altair_chart()
-image_full_hist.bind(full_hist, cat, selector, selector_cat)
+image_full_hist.bind(full_hist, cat, selector_cat)
 image_part_bar = app.altair_chart()
 image_part_bar.bind(part_bar, cat, selector, selector_cat)
 image_part_box = app.altair_chart()
