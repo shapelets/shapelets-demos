@@ -88,7 +88,7 @@ def full_bar(cat: dict, selector: str, selector_cat: str) -> AltairChart:
 
     return app.altair_chart(chart=chart)
 
-def full_box(cat: DataFrame,selector:str ,selector_cat: str)-> Image :
+def full_box(cat: DataFrame,selector:str ,selector_cat: str)-> AltairChart :
     cat = cat[selector_cat]
     melted_cat = pd.melt(cat.reset_index(), id_vars=['postalCode'], var_name='Feature', value_name='Count')
 
@@ -111,9 +111,9 @@ def full_hist(cat: dict, selector: str, selector_cat: str) -> AltairChart:
         color='Feature:N'
     ).properties(width=600, height=400, title='Distribution of Features by Zipcode').interactive()
 
-    return chart
+    return app.altair_chart(chart=chart)
 
-def part_bar(cat: DataFrame,selector: str,selector_cat: str)-> Image :
+def part_bar(cat: DataFrame,selector: str,selector_cat: str)-> AltairChart :
     selector = int(selector)
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
@@ -129,7 +129,7 @@ def part_bar(cat: DataFrame,selector: str,selector_cat: str)-> Image :
 
     return app.altair_chart(chart=chart)
 
-def part_box(cat:DataFrame,selector: str,selector_cat: str)-> Image :
+def part_box(cat:DataFrame,selector: str,selector_cat: str)-> AltairChart :
     selector = int(selector)
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
@@ -142,7 +142,7 @@ def part_box(cat:DataFrame,selector: str,selector_cat: str)-> Image :
     ).properties(width=600, height=400, title='Box plot by Feature').interactive()
     return app.altair_chart(chart=chart)
 
-def part_hist(cat:DataFrame,selector: str,selector_cat: str)-> Image :
+def part_hist(cat:DataFrame,selector: str,selector_cat: str)-> AltairChart :
     selector = int(selector)
     cat = cat[selector_cat]
     cat = cat[cat.index == selector]
@@ -156,7 +156,7 @@ def part_hist(cat:DataFrame,selector: str,selector_cat: str)-> Image :
         color='Feature:N'
     ).properties(width=600, height=400, title='Distribution of Features by Zipcode').interactive()
 
-    return chart
+    return app.altair_chart(chart=chart)
 
 def folium_map(papa_person: DataFrame, selector: str)-> FoliumChart :
     selector = int(selector)
@@ -202,15 +202,15 @@ map.bind(folium_map,papa_person, selector)
 
 image_full_bar = app.altair_chart()
 image_full_bar.bind(full_bar, cat, selector, selector_cat)
-image_full_box= app.image()
+image_full_box= app.altair_chart()
 image_full_box.bind(full_box, cat, selector, selector_cat)
-image_full_hist = app.image()
+image_full_hist = app.altair_chart()
 image_full_hist.bind(full_hist, cat, selector, selector_cat)
-image_part_bar = app.image()
+image_part_bar = app.altair_chart()
 image_part_bar.bind(part_bar, cat, selector, selector_cat)
-image_part_box = app.image()
+image_part_box = app.altair_chart()
 image_part_box.bind(part_box, cat, selector, selector_cat)
-image_part_hist = app.image()
+image_part_hist = app.altair_chart()
 image_part_hist.bind(part_hist, cat, selector, selector_cat)
 
 hf_bar.place(image_full_bar)
