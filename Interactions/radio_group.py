@@ -10,7 +10,7 @@ from typing import List
 def print_selected_option_1(radio:int)->str:
     return "Selected " + str(radio) + " in radiogroup 1"
 
-def print_selected_option_2(radio:int)->str:
+def print_selected_option_2(radio:str)->str:
     return "Selected " + (radio) + " in radiogroup 2"
 
 # Create a dataApp
