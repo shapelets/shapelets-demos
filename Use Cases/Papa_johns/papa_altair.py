@@ -202,7 +202,7 @@ map = app.folium_chart(title= "Map of Miami's Restaurants", folium=l)
 #Bind the map
 map.bind(folium_map,papa_person, selector)
 
-"""
+
 image_full_bar = app.altair_chart()
 image_full_bar.bind(full_bar, cat, selector_cat)
 image_full_box= app.altair_chart()
@@ -223,7 +223,7 @@ hf_box.place(image_full_box)
 hf_box.place(image_part_box)
 hf_hist.place(image_full_hist)
 hf_hist.place(image_part_hist)
-"""
+
 # Place everything in the data app
 # first place the map
 app.place(selector)
