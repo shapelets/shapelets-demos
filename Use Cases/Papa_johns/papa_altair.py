@@ -1,4 +1,3 @@
-
 # ## EDA: Create an an exploratory data analysis for the Miami population  
 # The point point of this eda is to figure out, who are the population of miami and how it distribution influence the restaurant industry in the city. 
 
@@ -84,7 +83,7 @@ def full_bar(cat: dict, selector_cat: str) -> AltairChart:
         y='Count:Q',
         color='Feature:N',
         tooltip=['postalCode:N', 'Feature:N', 'Count:Q']
-    ).properties(width=600, height=400, title='Bar Chart by Zipcode and Feature').interactive()
+    ).properties(width=600, height=400, title=f'Bar Chart by Zipcode and {selector_cat}').interactive()
 
     return app.altair_chart(chart=chart)
 
@@ -96,7 +95,7 @@ def full_box(cat: dict,selector_cat: str)-> AltairChart :
     chart = alt.Chart(melted_cat[melted_cat['Feature'] != 'postalCode']).mark_boxplot().encode(
         y='Count:Q',
         x='Feature:N'
-    ).properties(width=600, height=400, title='Box plot by Feature').interactive()
+    ).properties(width=600, height=400, title=f'Box plot by {selector_cat}').interactive()
     return app.altair_chart(chart=chart)
 
 def full_hist(cat: dict,selector_cat: str) -> AltairChart:
@@ -109,9 +108,10 @@ def full_hist(cat: dict,selector_cat: str) -> AltairChart:
         x=alt.X('Count:Q', bin=True),
         y=alt.Y('count()', axis=alt.Axis(title='Number of Zipcodes')),
         color='Feature:N'
-    ).properties(width=600, height=400, title='Distribution of Features by Zipcode').interactive()
+    ).properties(width=600, height=400, title=f'Distribution of {selector_cat} by Zipcode').interactive()
 
     return app.altair_chart(chart=chart)
+
 
 def part_bar(cat: dict,selector: int,selector_cat: str)-> AltairChart :
     
@@ -125,7 +125,7 @@ def part_bar(cat: dict,selector: int,selector_cat: str)-> AltairChart :
         y='Count:Q',
         color='Feature:N',
         tooltip=['postalCode:N', 'Feature:N', 'Count:Q']
-    ).properties(width=600, height=400, title='Bar Chart by Zipcode and Feature').interactive()
+    ).properties(width=600, height=400, title=f'Bar Chart by {selector} and {selector_cat}').interactive()
 
     return app.altair_chart(chart=chart)
 
@@ -145,7 +145,7 @@ def part_box(cat:dict,selector: int,selector_cat: str)-> AltairChart :
         y='Count:Q',
         x=alt.X('Feature:N', axis=alt.Axis(title='Feature')),
     )
-    chart = (box + points).properties(width=600, height=400, title='Box plot by Feature')
+    chart = (box + points).properties(width=600, height=400, title=f'Box plot by {selector} and {selector_cat}')
     return app.altair_chart(chart=chart)
 
 def part_hist(cat:dict,selector: int,selector_cat: str)-> AltairChart :
@@ -159,16 +159,14 @@ def part_hist(cat:dict,selector: int,selector_cat: str)-> AltairChart :
         x=alt.X('Count:Q', bin=True),
         y=alt.Y('count()', axis=alt.Axis(title='Number of Zipcodes')),
         color='Feature:N'
-    ).properties(width=600, height=400, title='Distribution of Features by Zipcode').interactive()
+    ).properties(width=600, height=400, title=f'Distribution of {selector} and {selector_cat}').interactive()
 
     return app.altair_chart(chart=chart)
 
 def folium_map(papa_person: DataFrame, selector: int)-> FoliumChart :
     # Folium map
-    # create a map of Miami
-    l=folium.Map(location = [25.761681
-    ,-80.191788], #Initiate map on Miami city
-    zoom_start = 10,min_zoom = 10)
+    l=folium.Map(location = [25.761681,-80.191788], #Initiate map on Miami city 
+                 zoom_start = 10,min_zoom = 10)
     marker_cluster = MarkerCluster().add_to(l)
     papa_person = papa_person[papa_person.postalCode == selector]
     #select other than pizza restaurant on data frame
@@ -179,20 +177,20 @@ def folium_map(papa_person: DataFrame, selector: int)-> FoliumChart :
     #select papa johns pizza restaurant on data frame
     pizza_johns=papa_person[papa_person["Papa John's Pizza"] >0]
     #plot the map with all the locations
-    for index,place in not_pizza_place.iterrows():
+    for place in not_pizza_place.iterrows():
         folium.Marker([place["latitude"], place["longitude"]], popup=(place["name"],place["address"])).add_to(marker_cluster)
     #plot the map with all the location
-    for index, place in not_papaj_place.iterrows():
+    for place in not_papaj_place.iterrows():
         folium.Marker([place["latitude"], place["longitude"]],icon=folium.Icon(color='green', icon='ok-sign'), popup=(place["name"],place["address"])).add_to(marker_cluster)
     #plot the map with all the location
-    for index, place in pizza_johns.iterrows():
+    for place in pizza_johns.iterrows():
         folium.Marker([place["latitude"], place["longitude"]],icon=folium.Icon(color='red', icon='ok-sign'), popup=(place["name"],place["address"])).add_to(marker_cluster)
 
     return app.folium_chart(title= "Map of Miami's Restaurants", folium=l)
     
 
 # create the selector for the postalCodes
-selector = app.selector(title="Select the Postal Code", options=['33122','33125','33126','33127','33128','33129','33130','33131','33132','33133','33134','33135','33136','33137','33138','33139','33140','33141','33142','33143','33144','33145','33146','33147','33148','33149','33150','33151','33152','33153','33155','33156','33157','33161','33162','33165','33166','33167','33168','33169','33170','33172','33173','33174','33175','33176','33177','33178','33179','33180','33181','33182','33183','33184','33185','33186','33187','33188','33189','33190','33193','33194'])
+selector = app.selector(title="Select the Postal Code", options = ['33122','33125','33126','33127','33128','33129','33130','33131','33132','33133','33134','33135','33136','33137','33138','33139','33140','33141','33142','33143','33144','33145','33146','33147','33148','33149','33150','33151','33152','33153','33155','33156','33157','33161','33162','33165','33166','33167','33168','33169','33170','33172','33173','33174','33175','33176','33177','33178','33179','33180','33181','33182','33183','33184','33185','33186','33187','33188','33189','33190','33193','33194'])
 selector_cat = app.selector(title="Select the Categorie", options=['Income', 'Language', 'Population', 'Married', 'Education', 'Male Female', 'Employment', 'Employement Group', 'Age', 'Household', 'Leftover'])
 
 # set the map of Miami
@@ -204,6 +202,7 @@ map = app.folium_chart(title= "Map of Miami's Restaurants", folium=l)
 #Bind the map
 map.bind(folium_map,papa_person, selector)
 
+"""
 image_full_bar = app.altair_chart()
 image_full_bar.bind(full_bar, cat, selector_cat)
 image_full_box= app.altair_chart()
@@ -217,13 +216,14 @@ image_part_box.bind(part_box, cat, selector, selector_cat)
 image_part_hist = app.altair_chart()
 image_part_hist.bind(part_hist, cat, selector, selector_cat)
 
+
 hf_bar.place(image_full_bar)
 hf_bar.place(image_part_bar)
 hf_box.place(image_full_box)
 hf_box.place(image_part_box)
 hf_hist.place(image_full_hist)
 hf_hist.place(image_part_hist)
-
+"""
 # Place everything in the data app
 # first place the map
 app.place(selector)
