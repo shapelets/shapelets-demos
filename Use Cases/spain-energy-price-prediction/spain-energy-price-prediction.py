@@ -237,7 +237,7 @@ graph = alt.Chart(df_fil).mark_line(strokeWidth=3).encode(
     color=alt.Color('color', legend=None)
 )
 
-app.place(app.altair_chart(spec = graph))
+app.place(app.altair_chart(chart = graph))
 
 app.place(app.text("""
 
@@ -559,8 +559,12 @@ for i in pd.date_range("2022-04-01",periods=14,freq='D'):
 
 dataset_plot = pd.concat(dataset_plot)
 
-def plot_selected_day(dataf: pd.DataFrame, dia: int, model:str )-> Image:
-    date = f"2022-04-{dia}"
+def plot_selected_day(dataf: pd.DataFrame, dia: int, model:tuple )-> Image:
+    if dia < 10:
+        date = f"2022-04-0{dia}"
+    else:
+        date = f"2022-04-0{dia}"
+    
     datafil =  dataf.loc[:,date]
 
     fig = plt.figure(figsize=(12,4)) 
@@ -568,15 +572,15 @@ def plot_selected_day(dataf: pd.DataFrame, dia: int, model:str )-> Image:
     plt.title(f'Hourly prediction for day {dia}')
     plt.plot(datafil.loc[:, "real_data"],label="Real Price")
 
-    if model[0] == "All Models":
+    if model[1] == "All Models":
         plt.plot(datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
         plt.plot(datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
         plt.plot(datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
-    elif model[0] == "RandomForestRegressor":
+    elif model[1] == "RandomForestRegressor":
         plt.plot(datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
-    elif model[0] == "LightGBM":
+    elif model[1] == "LightGBM":
         plt.plot(datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
-    elif model[0] == "XGBoost":
+    elif model[1] == "XGBoost":
         plt.plot(datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
 
     plt.legend()
@@ -593,7 +597,7 @@ slider = app.slider(title="Select a day", min_value=1, max_value=14, step=1, val
 app.place(slider)
 #hf.place(slider)#,width=9)
 
-selector = app.selector(default=["All Models"], 
+selector = app.selector(default="All Models", 
     options=["All Models", "RandomForestRegressor", "LightGBM", "XGBoost"])
 app.place(selector)
 
@@ -607,7 +611,7 @@ app.place(hf)
 fig = plt.figure()
 img_fig = app.image(fig)
 app.place(img_fig)
-img_fig.bind(plot_selected_day, dataset_plot, slider, selector, triggers=[button])
+img_fig.bind(plot_selected_day, dataset_plot, slider, selector, triggers=[button], mute=[slider, selector])
 
 app.place(app.text("""
     ---
