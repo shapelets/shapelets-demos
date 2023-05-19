@@ -76,7 +76,7 @@ Let's take a look at the number of missing values and also the unique values for
 app.place(md)
 
 # Read the data
-df = pd.read_csv('/root/shapelets-use-cases-main/bank-customer-churn-prediction/bank_customer_churn.csv')
+df = pd.read_csv('bank_customer_churn.csv')
 
 # Check columns list and missing values
 missing_values_categories = df.columns.to_numpy(dtype='str')

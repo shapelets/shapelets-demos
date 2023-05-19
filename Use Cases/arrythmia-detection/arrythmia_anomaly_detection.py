@@ -7,26 +7,24 @@
 import pandas as pd
 from shapelets.apps import DataApp
 from shapelets.apps.widgets import LineChart, View
-import stumpy
-import numpy as np
+import matrixprofile
 import datetime
 
-def computeAndPlotAnomalies(ts: pd.Series, windowSize: int, top_k: int) -> LineChart:
+def computeAndPlotAnomalies(ts: pd.Series, window_size: int, top_k: int) -> LineChart:
     # Find discords
-    mp = stumpy.stump(ts, windowSize)
-
-    discords_idx = np.flip(np.argsort(mp[:, 0]))
-
+    mp = matrixprofile.compute(ts.to_numpy(), windows=window_size)
+    discords = matrixprofile.discover.discords(mp, k=top_k, exclusion_zone=int(window_size/2))    
+    discords_idx = discords["discords"]
     views = []
-    for m in discords_idx[0:top_k]:
-        views.append(View(start=ts.index[m], end=ts.index[m]+datetime.timedelta(milliseconds=windowSize)))
+    for m in discords_idx:
+        views.append(View(start=ts.index[m], end=ts.index[m]+datetime.timedelta(milliseconds=window_size)))
     return LineChart(title='Anomalies', data=ts, views=views)
 
 app = DataApp(name="Anomaly detection",
               version=(1,0),
               description="In this app, Data from the MIT-BIH Arrhythmia Database (mitdb) are analyzed looking for premature ventricular contractions (PVC).")
 
-df = pd.read_csv('Resources/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
+df = pd.read_csv('mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 
 df.index = pd.to_datetime(df.index, unit='s')
 

@@ -5,9 +5,7 @@
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 import numpy as np
-from shapelets.apps import DataApp
-from shapelets.model import Sequence
-from shapelets.model.view_match import View
+from shapelets.apps import DataApp, View
 import time
 import pandas as pd
 import json
@@ -15,29 +13,11 @@ from matplotlib import pyplot as plt
 import scipy.stats as stats
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score, confusion_matrix
 from sklearn.svm import OneClassSVM
-#import isolation forest
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 import changefinder
-import pyscamp as scamp
-import builtins
-
-# Function that computes the top k anomalies given a sequence, its matrix profile and the window size of the anomalies
-def topk(seq: Sequence, profile: np.array, k: int, window_size: int):
-    starts = seq.axis.starts
-    every = seq.axis.every
-    result = list()
-    distances = profile
-    for x in range(k):
-        anomaly_idx = np.array(distances).argmax()
-        start = int(anomaly_idx)
-        end = start + window_size
-        view = View(seq, starts + (start * every), starts + (end * every))
-        result.append(view)
-        distances[builtins.max(0, start - window_size):builtins.min(end + window_size, len(distances))] = -np.inf
-    return result
-
-
+import matrixprofile
+import datetime
 
 # Instantiate a new data app
 app = DataApp(name="industrial_machine_anomaly_detection",
@@ -58,11 +38,11 @@ md = app.text("""
 app.place(md)
 
 # Load the data into a dataframe
-df = pd.read_csv('/root/shapelets-use-cases-main/industrial-machine-anomaly-detection/machine_temperature_system_failure.csv')
+df = pd.read_csv('machine_temperature_system_failure.csv')
 
 df['timestamp'] = pd.to_datetime(df['timestamp'],format="%Y-%m-%d %H:%M:%S")
 
-with open('/root/shapelets-use-cases-main/industrial-machine-anomaly-detection/combined_windows.json') as f:
+with open('combined_windows.json') as f:
   anomaly_points = json.load(f)['realKnownCause/machine_temperature_system_failure.csv']
 
 df['anomaly'] = 0
@@ -282,13 +262,15 @@ sigma_time = time.time() - start_time
 # Matrix profile
 window_size=650
 start_time = time.time()
-mp = scamp.selfjoin(df['value'].values,window_size)
-#seq = app.create_sequence(dataframe=df['value'].to_frame(), name='value', collection=None)
-seq = df["value"]
-views = topk(seq,mp[0],4,window_size)
+mp = matrixprofile.compute(df['value'].to_numpy(), windows=window_size)
+discords = matrixprofile.discover.discords(mp, k=4, exclusion_zone=int(window_size/2))    
+discords_idx = discords["discords"]
+print(discords_idx)
 mp_df = pd.DataFrame(0, columns=['anomaly'], index=df.index)
-for view in views:
-    mp_df[pd.to_datetime(view.begin, unit='ms'):pd.to_datetime(view.end,unit='ms')] = 1
+for m in discords_idx:
+    v = View(start=df.index[m], end=df.index[m+window_size-1])
+    mp_df.loc[v.start:v.end,'anomaly'] = 1
+    print(mp_df[v.start:v.end])
 mp_time = time.time() - start_time
 
 # Compute metrics
@@ -301,7 +283,6 @@ ocsvm_conf_matrix = confusion_matrix(df['anomaly'], ocsvm_df['anomaly'])
 ocsvm_FAR=ocsvm_conf_matrix[0][1]/(ocsvm_conf_matrix[0][1]+ocsvm_conf_matrix[0][0])
 ocsvm_MAR=ocsvm_conf_matrix[1][0]/(ocsvm_conf_matrix[1][1]+ocsvm_conf_matrix[1][0])
 ocsvm_recall = recall_score(df['anomaly'], ocsvm_df['anomaly'])
-
 
 iforest_conf_matrix = confusion_matrix(df['anomaly'], iforest_df['anomaly'])
 iforest_FAR=iforest_conf_matrix[0][1]/(iforest_conf_matrix[0][1]+iforest_conf_matrix[0][0])
@@ -317,7 +298,6 @@ ch_conf_matrix = confusion_matrix(df['anomaly'], ch_df['anomaly'])
 ch_FAR=ch_conf_matrix[0][1]/(ch_conf_matrix[0][1]+ch_conf_matrix[0][0])
 ch_MAR=ch_conf_matrix[1][0]/(ch_conf_matrix[1][1]+ch_conf_matrix[1][0])
 ch_recall = recall_score(df['anomaly'], ch_df['anomaly'])
-
 
 sigma_conf_matrix = confusion_matrix(df['anomaly'], sigma_df['anomaly'])
 sigma_FAR=sigma_conf_matrix[0][1]/(sigma_conf_matrix[0][1]+sigma_conf_matrix[0][0])
