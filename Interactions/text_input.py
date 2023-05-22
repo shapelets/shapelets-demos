@@ -10,7 +10,7 @@ def change_text(text: str) -> str:
     return text
 
 def change_text1(text: str) -> TextInput:
-    return TextInput(text)
+    return TextInput(value=text)
 
 # Create a dataApp
 app = DataApp(name="text_input")
@@ -28,7 +28,7 @@ app.place(text)
 text1 = app.text_input()
 
 # Bind
-text1.bind(change_text1, "Setting an alternative text")
+text1.bind(change_text1, "Setting an alternative text",triggers=[text1])
 
 # Place text with title into the Dataapp
 app.place(text1)

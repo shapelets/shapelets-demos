@@ -23,7 +23,7 @@ spec = alt.Chart(source).mark_circle(size=60).encode(
 ).interactive()
 
 # Create altair chart widget
-altair_chart = app.altair_chart(title='Titulo Altair Chart 2', spec=spec)
+altair_chart = app.altair_chart(title='Titulo Altair Chart 2', chart=spec)
 
 # Place widget
 app.place(altair_chart)
