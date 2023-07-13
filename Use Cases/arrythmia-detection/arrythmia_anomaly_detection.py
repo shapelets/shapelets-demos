@@ -4,6 +4,10 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
+import shapelets as sh
+sh.login(user_name='admin',password='admin')
+
+
 import pandas as pd
 from shapelets.apps import DataApp
 from shapelets.apps.widgets import LineChart, View
@@ -48,6 +52,6 @@ line_chart1 = app.line_chart(title='MLII', data=df['MLII'])
 
 app.place(line_chart1)
 
-line_chart1.bind(computeAndPlotAnomalies, df['MLII'], windowSize, top_k, triggers=[button])
+line_chart1.bind(computeAndPlotAnomalies, df['MLII'], windowSize, top_k, triggers=[button],mute=[windowSize,top_k])
 
 app.register()
