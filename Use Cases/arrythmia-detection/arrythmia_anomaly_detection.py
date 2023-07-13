@@ -7,7 +7,6 @@
 import shapelets as sh
 sh.login(user_name='admin',password='admin')
 
-
 import pandas as pd
 from shapelets.apps import DataApp
 from shapelets.apps.widgets import LineChart, View

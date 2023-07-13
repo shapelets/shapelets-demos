@@ -1,3 +1,12 @@
+# Copyright (c) 2023 Grumpy Cat Software S.L.
+#
+# This Source Code is licensed under the MIT 2.0 license.
+# the terms can be found in LICENSE.md at the root of
+# this project, or at http://mozilla.org/MPL/2.0/.
+
+import shapelets as sh
+sh.login(user_name='admin',password='admin')
+
 from shapelets.apps import DataApp
 from shapelets.model import Image
 import pandas as pd
