@@ -4,10 +4,14 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
+import shapelets as sh
+sh.login(user_name='admin',password='admin')
+
 from shapelets.apps import DataApp
 
 # Create function that returns the string to be shown to the user
-def change_label(option_selected: str) -> str:
+def change_label(option_selected: int) -> str:
+    print(option_selected)
     return "Selected option " + option_selected
 
 # Create data app

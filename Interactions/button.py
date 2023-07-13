@@ -4,6 +4,9 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
+import shapelets as sh
+sh.login(user_name='admin',password='admin')
+
 from shapelets.apps import DataApp
 
 # Create function that returns the input value plus one
@@ -30,6 +33,19 @@ app.place(label)
 # mute=[number] prevents change_label() from being called when number changes
 # If you want label to change also when number changes, remove mute=[number]
 label.bind(change_label, number, mute=[number], triggers=[button])
+
+
+# Bind button's text 
+button2 = app.button("Binded button")
+app.place(button2)
+
+def change_text() -> str:
+    # Remember: A button can't be used as a input, only as a trigger, but you can modify the text of the button
+    return "Modified text"
+
+button2.bind(change_text,triggers=[button2])
+
+
 
 # Register the Dataapp
 app.register()
