@@ -16,3 +16,5 @@ data_subset = data.select_columns(['Sepal_Area','Sepal_Length','Sepal_Width'])
 
 # or 
 data_subset = data.select_columns([0,1,2])
+
+print(data_subset.head())

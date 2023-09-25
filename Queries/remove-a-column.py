@@ -11,3 +11,5 @@ session = sh.sandbox()
 data = session.load_test_data()
 
 data = data.drop_columns(['Class'])
+
+print(data.columns)

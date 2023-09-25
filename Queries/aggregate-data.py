@@ -11,4 +11,6 @@ session = sh.sandbox()
 
 data = session.load_test_data()
 
-session.map((x.Class,avg(x.Sepal_Length)) for x in data)
+result = session.map((x.Class,avg(x.Sepal_Length)) for x in data)
+
+print(result.head())

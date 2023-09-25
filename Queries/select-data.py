@@ -13,3 +13,5 @@ data = session.load_test_data()
 data_selected = session.map(x for x in data)
 
 data_filtered = session.map(x for x in data if x.Petal_Length > 1.5)
+
+print(data_filtered)
