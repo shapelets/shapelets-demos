@@ -29,4 +29,4 @@ def download_s3_folder(bucket_name, s3_folder, local_dir=None):
         print(f"downloaded {target}")
 
 s3 = boto3.resource("s3", config=Config(signature_version=UNSIGNED))
-download_s3_folder("ursa-labs-taxi-data", "", "nyc-taxi")
+download_s3_folder("ursa-labs-taxi-data", "", "Benchmarks/nyc-taxi")
