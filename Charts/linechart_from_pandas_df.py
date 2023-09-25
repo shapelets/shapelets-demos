@@ -5,8 +5,6 @@
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 from shapelets.apps import DataApp
 import pandas as pd
 

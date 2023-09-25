@@ -9,15 +9,15 @@ import os
 import shapelets as sh
 import requests
 
-# Instantiate DataApp
-app = DataApp("Linechart from parquet file")
-
-# Download sample parquet file from S3
+# Download sample parquet file from S3 (may take a couple minutes to complete)
 filename = "sample_data.parquet"
 if not os.path.exists(filename):
     data = requests.get("https://ursa-labs-taxi-data.s3.amazonaws.com/2009/01/data.parquet")
     with open(filename, "wb") as file:
         file.write(data.content)
+
+# Instantiate DataApp
+app = DataApp("Linechart from parquet file")
 
 # Load parquet file
 session = sh.sandbox()

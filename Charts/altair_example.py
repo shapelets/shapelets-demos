@@ -5,8 +5,6 @@
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 from vega_datasets import data
 from shapelets.apps import DataApp
 import altair as alt
@@ -26,7 +24,7 @@ spec = alt.Chart(source).mark_circle(size=60).encode(
 ).interactive()
 
 # Create altair chart widget
-altair_chart = app.altair_chart(title='Titulo Altair Chart 2', chart=spec)
+altair_chart = app.altair_chart(title='Titulo Altair Chart', chart=spec)
 
 # Place widget
 app.place(altair_chart)
