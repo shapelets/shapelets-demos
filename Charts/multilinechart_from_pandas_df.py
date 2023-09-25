@@ -5,7 +5,6 @@
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 from shapelets.apps import DataApp
-import pandas as pd
 from vega_datasets import data
 
 # Instantiate DataApp

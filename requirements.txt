@@ -1,1 +1,4 @@
 shapelets-platform
+vega-datasets
+boto3
+altair

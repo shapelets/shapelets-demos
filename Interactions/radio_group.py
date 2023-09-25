@@ -4,11 +4,7 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 from shapelets.apps import DataApp
-from typing import List
 
 def print_selected_option_1(radio:int)->str:
     return "Selected " + str(radio) + " in radiogroup 1"
