@@ -149,12 +149,15 @@ app.place(md3)
 
 # Check the churning relationship with categorical variables
 fig2, axarr = plt.subplots(2, 2, figsize=(12, 12))
+df['exited'] = df['exited'].astype(str)
 sns.countplot(x='country', hue='exited', data=df, ax=axarr[0][0])
 sns.countplot(x='gender', hue='exited', data=df, ax=axarr[0][1])
 sns.countplot(x='has_cr_card', hue='exited', data=df, ax=axarr[1][0])
 sns.countplot(x='is_active', hue='exited', data=df, ax=axarr[1][1])
+df['exited'] = df['exited'].astype(np.int64)
 img2 = app.image(fig2)
 app.place(img2)
+
 
 # Add text 
 md4 = app.text('''
