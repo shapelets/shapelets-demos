@@ -20,7 +20,6 @@ from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 import changefinder
 import matrixprofile
-import datetime
 
 # Instantiate a new data app
 app = DataApp(name="industrial_machine_anomaly_detection",

@@ -4,11 +4,8 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 from shapelets.apps import DataApp
-from shapelets.model import Image
+from shapelets.apps.widgets import Image
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -180,9 +177,9 @@ line_chart5 = app.line_chart(title='GP_Ciclo_Combinado', data=df['GP_Ciclo_Combi
 tab5.place(line_chart5)
 
 tab6 = app.vertical_layout()
-tabs_fp.add_tab("Cogeneracion Energy",tab6)
+tabs_fp.add_tab("Cogeneration Energy",tab6)
 
-line_chart6 = app.line_chart(title='GP_Cogeneracion', data=df['GP_Cogeneracion'])
+line_chart6 = app.line_chart(title='GP_Cogeneration', data=df['GP_Cogeneracion'])
 tab6.place(line_chart6)
 
 # Create tabs layout
@@ -412,7 +409,6 @@ y = train_data['price_future']
 X = train_data.drop('price_future',axis=1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
-
 
 app.place(app.text("""
 

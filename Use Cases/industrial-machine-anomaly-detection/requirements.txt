@@ -1,2 +1,3 @@
+matrixprofile-ts
 changefinder==0.3
 pyscamp==4.0.0

@@ -4,20 +4,19 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 import pandas as pd
 from shapelets.apps import DataApp
 from shapelets.apps.widgets import LineChart, View
-import matrixprofile
+from matrixprofile import *
+from matrixprofile.discords import discords
 import datetime
+import numpy as np #required by matrixprofile, do not remove
+import sys #required by matrixprofile, do not remove
 
 def computeAndPlotAnomalies(ts: pd.Series, window_size: int, top_k: int) -> LineChart:
     # Find discords
-    mp = matrixprofile.compute(ts.to_numpy(), windows=window_size)
-    discords = matrixprofile.discover.discords(mp, k=top_k, exclusion_zone=int(window_size/2))    
-    discords_idx = discords["discords"]
+    mp = matrixProfile.scrimp_plus_plus(ts.to_numpy(), m=window_size)
+    discords_idx = discords(np.append(mp[0],np.zeros(window_size-1)+np.nan), ex_zone=int(window_size/2), k=top_k)
     views = []
     for m in discords_idx:
         views.append(View(start=ts.index[m], end=ts.index[m]+datetime.timedelta(milliseconds=window_size)))
@@ -31,7 +30,7 @@ df = pd.read_csv('mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'],
 
 df.index = pd.to_datetime(df.index, unit='s')
 
-df = df.resample('1ms').asfreq().fillna(method='ffill')
+df = df.resample('1ms').asfreq().ffill()
 
 windowSize = app.number_input(title="Window size value [ms]", value=250)
 
