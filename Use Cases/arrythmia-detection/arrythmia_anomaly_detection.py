@@ -15,7 +15,7 @@ import sys #required by matrixprofile, do not remove
 
 def computeAndPlotAnomalies(ts: pd.Series, window_size: int, top_k: int) -> LineChart:
     # Find discords
-    mp = matrixProfile.scrimp_plus_plus(ts.to_numpy(), m=window_size)
+    mp = matrixProfile.scrimp_plus_plus(ts.to_numpy(), m=window_size, runtime=1)
     discords_idx = discords(np.append(mp[0],np.zeros(window_size-1)+np.nan), ex_zone=int(window_size/2), k=top_k)
     views = []
     for m in discords_idx:
