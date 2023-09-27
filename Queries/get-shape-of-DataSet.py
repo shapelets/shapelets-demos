@@ -10,4 +10,4 @@ session = sh.sandbox()
 
 data = session.load_test_data()
 
-print(data.shape)
+print(data.shape())

@@ -158,7 +158,6 @@ df['exited'] = df['exited'].astype(np.int64)
 img2 = app.image(fig2)
 app.place(img2)
 
-
 # Add text 
 md4 = app.text('''
 From the previous charts the following can be noted:
