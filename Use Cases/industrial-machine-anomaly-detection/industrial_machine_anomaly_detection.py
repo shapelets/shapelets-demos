@@ -4,9 +4,6 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-import shapelets as sh
-sh.login(user_name='admin',password='admin')
-
 import numpy as np
 from shapelets.apps import DataApp, View
 import time
@@ -19,7 +16,10 @@ from sklearn.svm import OneClassSVM
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 import changefinder
-import matrixprofile
+from matrixprofile import *
+from matrixprofile.discords import discords
+import numpy as np #required by matrixprofile, do not remove
+import sys #required by matrixprofile, do not remove
 
 # Instantiate a new data app
 app = DataApp(name="industrial_machine_anomaly_detection",
@@ -264,10 +264,8 @@ sigma_time = time.time() - start_time
 # Matrix profile
 window_size=650
 start_time = time.time()
-mp = matrixprofile.compute(df['value'].to_numpy(), windows=window_size)
-discords = matrixprofile.discover.discords(mp, k=4, exclusion_zone=int(window_size/2))    
-discords_idx = discords["discords"]
-print(discords_idx)
+mp = matrixProfile.scrimp_plus_plus(df['value'].to_numpy(), m=window_size, runtime=1)
+discords_idx = discords(np.append(mp[0],np.zeros(window_size-1)+np.nan), k=4, ex_zone=int(window_size/2))
 mp_df = pd.DataFrame(0, columns=['anomaly'], index=df.index)
 for m in discords_idx:
     v = View(start=df.index[m], end=df.index[m+window_size-1])
