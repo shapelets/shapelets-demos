@@ -32,13 +32,21 @@ df.index = pd.to_datetime(df.index, unit='s')
 
 df = df.resample('1ms').asfreq().ffill()
 
-windowSize = app.number_input(title="Window size value [ms]", value=250)
+hl = app.horizontal_layout()
+app.place(hl)
 
-app.place(windowSize, width=6)
+vl1 = app.vertical_layout()
+vl2 = app.vertical_layout()
+hl.place(vl1)
+hl.place(vl2)
+
+windowSize = app.number_input(title="Window size value [ms]", value=400)
+
+vl1.place(windowSize, width=6)
 
 top_k = app.slider(title="Desired number of anomalies: ", min_value=1, max_value=20, step=1, value=1)
 
-app.place(top_k, width=6)
+vl2.place(top_k, width=6)
 
 button = app.button("Execute anomaly-detection")
 
