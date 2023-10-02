@@ -5,7 +5,7 @@
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 from shapelets.apps import DataApp
-from shapelets.apps.widgets import Image
+from shapelets.apps.widgets import Image,LineChart
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -564,33 +564,30 @@ for i in pd.date_range("2022-04-01",periods=14,freq='D'):
 
 dataset_plot = pd.concat(dataset_plot)
 
-def plot_selected_day(dataf: pd.DataFrame, dia: int, model:tuple )-> Image:
+def plot_selected_day(dataf: pd.DataFrame, dia: int, model:tuple )-> LineChart:
     if dia < 10:
         date = f"2022-04-0{dia}"
     else:
-        date = f"2022-04-0{dia}"
+        date = f"2022-04-{dia}"
     
-    datafil =  dataf.loc[:,date]
+    datafil =  dataf.loc[date + " 00:00:00":date+" 23:00:00",:]
 
-    fig = plt.figure(figsize=(12,4)) 
+    lc_res = app.line_chart(title=f'Hourly prediction for day {dia}')
 
-    plt.title(f'Hourly prediction for day {dia}')
-    plt.plot(datafil.loc[:, "real_data"],label="Real Price")
+    lc_res.plot(y_axis=datafil.loc[:, "real_data"],x_axis=datafil.index,label="Real Price")
 
     if model[1] == "All Models":
-        plt.plot(datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
-        plt.plot(datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
-        plt.plot(datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
     elif model[1] == "RandomForestRegressor":
-        plt.plot(datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_rf"],label="Prediction RandomForestRegressor")
     elif model[1] == "LightGBM":
-        plt.plot(datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_lighgbm"],label="Prediction LightGBM")
     elif model[1] == "XGBoost":
-        plt.plot(datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
+        lc_res.plot(y_axis=datafil.loc[:, "prediction_xgboost"],label="Prediction XGBoost")
 
-    plt.legend()
-
-    return app.image(img=fig)
+    return lc_res
 
 # Create an horizontal_flow_panel
 hf = app.horizontal_layout()
@@ -613,10 +610,9 @@ app.place(button)
 
 app.place(hf)
 
-fig = plt.figure()
-img_fig = app.image(fig)
-app.place(img_fig)
-img_fig.bind(plot_selected_day, dataset_plot, slider, selector, triggers=[button], mute=[slider, selector])
+lc_fig = app.line_chart()
+app.place(lc_fig)
+lc_fig.bind(plot_selected_day, dataset_plot, slider, selector, triggers=[button], mute=[slider, selector])
 
 app.place(app.text("""
     ---
