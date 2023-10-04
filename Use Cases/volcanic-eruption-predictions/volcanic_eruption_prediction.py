@@ -6,15 +6,18 @@
 
 # Shapelets imports
 from shapelets.apps import DataApp
-from shapelets.model import Capsule, Image
+from shapelets.apps.widgets import Image
 
 # Other imports
-from pandas import Dataframe
 from datetime import datetime
 import pandas as pd
 import pickle
 import requests
-from io import StringIO
+from io import StringIO, BytesIO
+from datetime import datetime
+import plotly.express as px
+from matplotlib import pyplot as plt
+
 
 def encode_multipart_formdata(fields):
     # This function takes the data fields in a form and builds the body and content type for a multipart HTTP request
@@ -58,17 +61,13 @@ def get_earthquakes_IGN(lat_min, lat_max, long_min, long_max, start_date, end_da
                 ' Magnitude: ' + df['Mag.'].astype(str).replace('nan', 'Not available')
     return df
 
-def build_map(eqks:Dataframe,start_date:float,end_date:float)->Image:
-    # This function takes a Dataframe containing all earthquakes, filters them and plots them into a plotly map
-    from datetime import datetime
-    import plotly.express as px
-    from matplotlib import pyplot as plt
-    from io import BytesIO
+def build_map(eqks,start_date,end_date)->Image:
     # Convert the Shapelets dataframe into a pandas dataframe
-    eqks_pd = pd.DataFrame(eqks)
-
+    eqks_pd['Fecha'] = pd.to_datetime(eqks_pd['Fecha'])
+    
     # Extract the earthquakes within the dates provided by the user
     eqks_pd_in_range = eqks_pd[(eqks_pd['Fecha'] >= start_date) & (eqks_pd['Fecha'] <= end_date)]
+    
     # Build the map visualization using plotly express
     fig = px.scatter_mapbox(eqks_pd_in_range,
                             lat="Latitud",
@@ -100,20 +99,20 @@ def build_map(eqks:Dataframe,start_date:float,end_date:float)->Image:
     # Create a matplotlib figure and display the image in the figure
     fig, ax = plt.subplots()
     ax.imshow(img)
-
+    
     # Return an image based on the content of the figure
-    return Image(fig)
+    return Image(img=fig)
 
-def compute_probability(all_eqks:Dataframe, key:str, model:Capsule)->str:
+def compute_probability(all_eqks, key, model)->str:
     # This function takes a Dataframe containing all earthquakes and the key of the desired earthquake and
     # returns the probability of eruption
     import numpy as np
     # Convert the dataframe into a pandas dataframe
     all_eqks_pd = pd.DataFrame(all_eqks.dataframe)
     # Extract the year of the earthquake
-    fecha = all_eqks_pd.loc[all_eqks_pd['Key'] == key, 'Fecha'].dt.year.values[0]
+    fecha = all_eqks_pd.loc[all_eqks_pd['Key'] == key[1], 'Fecha'].dt.year.values[0]
     # Extract the event id of the earthquake
-    evento = all_eqks_pd.loc[all_eqks_pd['Key'] == key, 'Evento'].values[0]
+    evento = all_eqks_pd.loc[all_eqks_pd['Key'] == key[1], 'Evento'].values[0]
     # Create the url pointing to the dat file containing the data of the chosen earthquake
     url = 'https://www.ign.es/web/resources/sismologia/www/dir_images_terremotos/fases/' + str(fecha) + '/' + str(evento) + '.dat'
     try:
@@ -137,11 +136,10 @@ def compute_probability(all_eqks:Dataframe, key:str, model:Capsule)->str:
     except:
         return "Could not retrieve phase data for this earthquake. Try with a posterior one."
 
-
 # Create the data app
 app = DataApp(name="volcanic_eruption_prediction",
+              version=(1,0),
               description="Use case for predicting volcanic eruptions using data from earthquakes")
-
 
 
 # Create and place a markdown
@@ -180,34 +178,34 @@ eqks_pd = get_earthquakes_IGN(lat_min=28.3,
                             start_date=pd.Timestamp.min.strftime("%d/%m/%Y"),
                             end_date=datetime.now().strftime("%d/%m/%Y"))
 
-
-# Convert the pandas dataframe into a Shapelets dataframe
-#eqks_df = client.create_dataframe(eqks_pd, name='earthquakes', description='all earthquakes retrieved')
-
 # create a date selector 
-start_date = app.datetime_selector(title='Starting date', date_time=datetime(2019,1,1).timestamp())
-end_date = app.datetime_selector(title='End date', date_time=datetime(2020,1,1).timestamp())
-
-#start_date = app.datetime_selector(title='Starting date', date_time=datetime(2019,1,1).timestamp() )
-#end_date = app.datetime_selector(title='End date', date_time=datetime(2020,1,1).timestamp())
-
-
+start_date = app.datetime_selector(title='Starting date', date_time=datetime(2019,1,1))
+end_date = app.datetime_selector(title='End date', date_time=datetime(2020,1,1))
 
 # Create a button
 button = app.button(text='Show earthquakes')
-text1= app.text("Build a map using the earthquake data retrieved and the selected dates, and assign this action to the button")
-# Build the map using the earthquake data retrieved and the selected dates, and assign this action to the button
-map = build_map(eqks_pd, start_date, end_date)
-text1.bind(button,trigger=map)
 
-# Place date selectors and button
+# Build the map using the earthquake data retrieved and the selected dates, and assign this action to the button
+image = app.image()
+image.bind(build_map, eqks_pd, start_date, end_date, triggers=[button])
+
+# Place date selectors, button and image
 app.place(start_date)
 app.place(end_date)
 app.place(button)
 
-# Create and place an image
-img2=app.image(map)
-app.place(img2)
+# Create layouts to place map
+hl = app.horizontal_layout()
+vl1 = app.vertical_layout()
+vl1.place(image)
+vl2 = app.vertical_layout()
+vl3 = app.vertical_layout()
+vl4 = app.vertical_layout()
+hl.place(vl1)
+hl.place(vl2)
+hl.place(vl3)
+hl.place(vl4)
+app.place(hl)
 
 # Create and place a markdown
 md3 = app.text("""
@@ -243,18 +241,18 @@ app.place(selector)
 button2 = app.button(text="Compute probability of eruption")
 
 # Load the model
-model = Capsule(data=pickle.load(open('best_model_volcano_eruption.pkl', 'rb')), name='model')
+model = pickle.load(open('best_model_volcano_eruption.pkl', 'rb'))
 
 # The probability of eruption is computed using all earthquakes to find the year and event id of the chosen earthquake
-text =compute_probability(eqks_pd, selector, model)
+#text = compute_probability(eqks_pd, selector, model)
 text3 = app.text("The probability of eruption is computed using all earthquakes to find the year and event id of the chosen earthquake")
 # Assign the action of computing the probability of eruption to the button, and place it
-text3.bind(button2,trigger=text)
+#text3.bind(button2,trigger=text)
 app.place(button2)
 
 # Create and place a label with the result of the prediction in the form of a string
-label = app.label(text)
-app.place(label)
+#label = app.label(text)
+#app.place(label)
 
 # Register the DataApp
 app.register()
