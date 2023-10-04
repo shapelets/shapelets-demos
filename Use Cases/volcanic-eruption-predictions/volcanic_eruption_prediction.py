@@ -6,7 +6,7 @@
 
 # Shapelets imports
 from shapelets.apps import DataApp
-from shapelets.apps.widgets import Image
+from shapelets.apps.widgets import Image, Text
 
 # Other imports
 from datetime import datetime
@@ -17,6 +17,7 @@ from io import StringIO, BytesIO
 from datetime import datetime
 import plotly.express as px
 from matplotlib import pyplot as plt
+import numpy as np
 
 
 def encode_multipart_formdata(fields):
@@ -61,7 +62,7 @@ def get_earthquakes_IGN(lat_min, lat_max, long_min, long_max, start_date, end_da
                 ' Magnitude: ' + df['Mag.'].astype(str).replace('nan', 'Not available')
     return df
 
-def build_map(eqks,start_date,end_date)->Image:
+def build_map(eqks_pd,start_date,end_date)->Image:
     # Convert the Shapelets dataframe into a pandas dataframe
     eqks_pd['Fecha'] = pd.to_datetime(eqks_pd['Fecha'])
     
@@ -103,12 +104,9 @@ def build_map(eqks,start_date,end_date)->Image:
     # Return an image based on the content of the figure
     return Image(img=fig)
 
-def compute_probability(all_eqks, key, model)->str:
+def compute_probability(all_eqks_pd, key, model)->Text:
     # This function takes a Dataframe containing all earthquakes and the key of the desired earthquake and
     # returns the probability of eruption
-    import numpy as np
-    # Convert the dataframe into a pandas dataframe
-    all_eqks_pd = pd.DataFrame(all_eqks.dataframe)
     # Extract the year of the earthquake
     fecha = all_eqks_pd.loc[all_eqks_pd['Key'] == key[1], 'Fecha'].dt.year.values[0]
     # Extract the event id of the earthquake
@@ -131,10 +129,10 @@ def compute_probability(all_eqks, key, model)->str:
         X = np.array([[feat1, feat2, feat3, feat4, feat5]])
         X = (X - feats_min) / (feats_max - feats_min)
         # Run inference on the model and obtain the probability scores
-        prob = model.data.predict_proba(X)
-        return "\nThe probability of eruption is {:0.2f}%.\n".format(100 * prob[0][1])
+        prob = model.predict_proba(X)
+        return Text(value="\nThe probability of eruption is {:0.2f}%.\n".format(100 * prob[0][1]))
     except:
-        return "Could not retrieve phase data for this earthquake. Try with a posterior one."
+        return Text(value="Could not retrieve phase data for this earthquake. Try with a posterior one.")
 
 # Create the data app
 app = DataApp(name="volcanic_eruption_prediction",
@@ -197,14 +195,10 @@ app.place(button)
 # Create layouts to place map
 hl = app.horizontal_layout()
 vl1 = app.vertical_layout()
+vl1.span = 6
 vl1.place(image)
-vl2 = app.vertical_layout()
-vl3 = app.vertical_layout()
-vl4 = app.vertical_layout()
+vl1.offset= 9
 hl.place(vl1)
-hl.place(vl2)
-hl.place(vl3)
-hl.place(vl4)
 app.place(hl)
 
 # Create and place a markdown
@@ -244,15 +238,11 @@ button2 = app.button(text="Compute probability of eruption")
 model = pickle.load(open('best_model_volcano_eruption.pkl', 'rb'))
 
 # The probability of eruption is computed using all earthquakes to find the year and event id of the chosen earthquake
-#text = compute_probability(eqks_pd, selector, model)
-text3 = app.text("The probability of eruption is computed using all earthquakes to find the year and event id of the chosen earthquake")
-# Assign the action of computing the probability of eruption to the button, and place it
-#text3.bind(button2,trigger=text)
+label = app.text("Select an earthquake and press the button to obtain an eruption probability value")
+ # Assign the action of computing the probability of eruption to the button, and place it
+label.bind(compute_probability, eqks_pd, selector, model, triggers=[button2], mute=[selector])
 app.place(button2)
-
-# Create and place a label with the result of the prediction in the form of a string
-#label = app.label(text)
-#app.place(label)
+app.place(label)
 
 # Register the DataApp
 app.register()
