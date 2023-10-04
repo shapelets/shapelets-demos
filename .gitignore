@@ -1,0 +1,7 @@
+env/
+**/.ipynb_checkpoints/
+**/errorLog_register.txt
+errorLog_register.txt
+
+**/.mypi_cache
+**/shapelets_server.log
