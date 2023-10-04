@@ -9,22 +9,25 @@ import os
 import shapelets as sh
 import requests
 
-# Download sample parquet file from S3 (may take a couple minutes to complete)
+# Instantiate DataApp
+app = DataApp("Linechart from parquet file", version=(1,0))
+
+# Download sample parquet file from S3
 filename = "sample_data.parquet"
 if not os.path.exists(filename):
+    print("Downloading...")
     data = requests.get("https://ursa-labs-taxi-data.s3.amazonaws.com/2009/01/data.parquet")
     with open(filename, "wb") as file:
         file.write(data.content)
 
-# Instantiate DataApp
-app = DataApp("Linechart from parquet file")
-
 # Load parquet file
 session = sh.sandbox()
 dataset = session.from_parquet(filename).limit(10000)
+dataset = dataset.rename_columns({'pickup_at':'index'})
 
 # Choose only useful columns
-subset = session.map((col.passenger_count, 
+subset = session.map((col.index,
+    col.passenger_count, 
     col.trip_distance, 
     col.fare_amount, 
     col.tip_amount,
