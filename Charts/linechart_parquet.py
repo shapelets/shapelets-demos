@@ -22,7 +22,7 @@ if not os.path.exists(filename):
 
 # Load parquet file
 session = sh.sandbox()
-dataset = session.from_parquet(filename).limit(10000)
+dataset = session.from_parquet(filename).limit(1000)
 dataset = dataset.rename_columns({'pickup_at':'index'})
 
 # Choose only useful columns
