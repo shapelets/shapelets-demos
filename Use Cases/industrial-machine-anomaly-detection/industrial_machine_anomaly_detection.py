@@ -270,7 +270,6 @@ mp_df = pd.DataFrame(0, columns=['anomaly'], index=df.index)
 for m in discords_idx:
     v = View(start=df.index[m], end=df.index[m+window_size-1])
     mp_df.loc[v.start:v.end,'anomaly'] = 1
-    print(mp_df[v.start:v.end])
 mp_time = time.time() - start_time
 
 # Compute metrics
