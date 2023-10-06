@@ -199,6 +199,8 @@ vl1.span = 6
 vl1.place(image)
 vl1.offset= 9
 hl.place(vl1)
+vl2 = app.vertical_layout()
+hl.place(vl2)
 app.place(hl)
 
 # Create and place a markdown
@@ -224,7 +226,7 @@ Our model achieves a classification precision of 67%, a recall of 52% and an F-s
 Pick an earthquake in the list below and use our model to predict the probability of an eruption:\n
 
 """,markdown=True)
-app.place(md3)
+vl2.place(md3)
 
 # Create and place a selector which takes all earthquakes downloaded as options
 selector = app.selector(title='Select an earthquake to compute its probability of eruption:',
