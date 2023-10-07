@@ -5,6 +5,7 @@ import pandas as pd
 
 sb = sh.sandbox()
 data = sb.from_parquet('water_data.parquet')
+data = data.rename_columns({'measurement_timestamp':'index'})
 
 app = DataApp(name="Weather data stations", 
               description="Dataapp showing weather data for the City of Chicago", 
