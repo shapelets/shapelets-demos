@@ -1,7 +1,8 @@
+<p align="center">
+<img src="https://github.com/shapelets/.github/blob/main/profile/Logo-Horizontal-Shapelets.png" width="400">
+</p>
 
 # Shapelets Demos
-
-
 
 [![PyPI Latest Release](https://img.shields.io/pypi/v/shapelets-platform)](https://pypi.org/project/shapelets-platform/)
 [![Documentation](https://img.shields.io/badge/docs-Shapelets-lightgrey)](https://shapelets.io/doc/)
