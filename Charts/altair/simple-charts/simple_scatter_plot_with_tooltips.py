@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Grumpy Cat Software S.L.
+# Copyright (c) 2023 Grumpy Cat Software S.L.
 #
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
@@ -9,7 +9,7 @@ from shapelets.apps import DataApp
 import altair as alt
 
 # Instantiate data app
-app = DataApp("altair_example")
+app = DataApp("Simple scatterplot with tooltips", version=(0,1))
 
 # Get sample data frame
 source = data.cars()
@@ -23,7 +23,7 @@ spec = alt.Chart(source).mark_circle(size=60).encode(
 ).interactive()
 
 # Create altair chart widget
-altair_chart = app.altair_chart(title='Titulo Altair Chart', chart=spec)
+altair_chart = app.altair_chart(title='Simple scatterplot with tooltips', chart=spec)
 
 # Place widget
 app.place(altair_chart)
