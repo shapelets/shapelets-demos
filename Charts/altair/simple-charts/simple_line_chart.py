@@ -21,7 +21,7 @@ source = pd.DataFrame({
 spec = alt.Chart(source).mark_line().encode(
     x='x',
     y='f(x)'
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='Simple line chart', chart=spec)

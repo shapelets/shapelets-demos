@@ -19,7 +19,7 @@ source = pd.DataFrame({
 spec = alt.Chart(source).mark_bar().encode(
     x='a',
     y='b'
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='The Title', chart=spec)

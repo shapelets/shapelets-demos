@@ -17,7 +17,7 @@ spec = alt.Chart(source).mark_area().encode(
     x="year:T",
     y="net_generation:Q",
     color="source:N"
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='Simple stacked area chart', chart=spec)

@@ -16,7 +16,7 @@ source = data.cars()
 spec = alt.Chart(source).mark_tick().encode(
     x='Horsepower:Q',
     y='Cylinders:O'
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='Simple strip plot', chart=spec)

@@ -25,7 +25,7 @@ spec = alt.Chart(source).mark_rect().encode(
     x='x:O',
     y='y:O',
     color='z:Q'
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='Simple heatmap', chart=spec)

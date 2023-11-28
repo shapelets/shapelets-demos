@@ -16,7 +16,7 @@ source = data.movies.url
 spec = alt.Chart(source).mark_bar().encode(
     alt.X("IMDB_Rating:Q", bin=True),
     y='count()',
-).interactive()
+)
 
 # Create altair chart widget
 altair_chart = app.altair_chart(title='Simple histogram', chart=spec)
