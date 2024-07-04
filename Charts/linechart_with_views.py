@@ -1,30 +1,36 @@
-# Copyright (c) 2022 Grumpy Cat Software S.L.
+# Copyright (c) 2024 Grumpy Cat Software S.L.
 #
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-import pandas as pd
-from shapelets.apps import DataApp
-from shapelets.apps.widgets import View
+import shapelets.apps as sa
+import altair as alt
 
-# Create data app
-app = DataApp(name="linechart_with_views")
+# Instantiate DataApp
+app = sa.dataApp()
+app.title("Linechart from parquet file")
 
 # Load data from csv
-df = pd.read_csv('../Resources/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
+dataset = app.sandbox.from_csv('dataset',['../Resources/mitdb102.csv'], has_header=True, skip_rows=1).limit(20000,200000).execute().to_pandas()
 
-# Set index
-df.index = pd.to_datetime(df.index, unit='s')
+dataset['Start']=577
+dataset['End']=577.5
 
-# Highlight view by setting index start and end of the view to be highlighted
-view = View(1000,2000)
+# Use for large datasets
+alt.data_transformers.enable("vegafusion")
+ac = alt.Chart(dataset, width="container").mark_line().encode(
+    x='seconds',
+    y='mV_1'
+).interactive(bind_y=False)
 
-# Create linechart and add view
-line_chart1 = app.line_chart(title='MLII', data=df['MLII'], views=[view])
+view = alt.Chart(dataset).mark_rect(color='#FF0000',opacity=0.005).encode(
+    x=alt.X('Start'), 
+    x2='End', 
+    y=alt.value(0), 
+    y2=alt.value(300))
 
-# Add linechart to data app
-app.place(line_chart1)
+app.simplechart(spec=(ac+view).to_json(format="vega"), type="Altair")
 
-# Register data app
-app.register()
+if __name__ == '__main__':
+    sa.serve(app, __file__)
