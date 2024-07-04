@@ -1,18 +1,27 @@
-# Copyright (c) 2022 Grumpy Cat Software S.L.
+# Copyright (c) 2024 Grumpy Cat Software S.L.
 #
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
 import folium
-from shapelets.apps import DataApp
+import shapelets.apps as sa
 
 # Create a data app
-app = DataApp("folium_example")
+app = sa.dataApp()
 
 m = folium.Map(location=[45.5236, -122.6750])
 
-folium_chart = app.folium_chart(title='Folium Map', folium=m)
-app.place(folium_chart)
+folium_chart = app.simplechart(title='Folium Map', 
+                              type='Folium',
+                              cssStyles={
+                                'width': '100%',
+                                'height': '600px',
+                                'color': 'blue',
+                                'fontSize': '20px',
+                                'border': '0px solid black'
+                            }, 
+                            spec=m._repr_html_())
 
-app.register()
+if __name__ == '__main__':
+    sa.serve(app, __file__)
