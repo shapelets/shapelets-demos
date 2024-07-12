@@ -22,6 +22,3 @@ folium_chart = app.simplechart(title='Folium Map',
                                 'border': '0px solid black'
                             }, 
                             spec=m._repr_html_())
-
-if __name__ == '__main__':
-    sa.serve(app, __file__)

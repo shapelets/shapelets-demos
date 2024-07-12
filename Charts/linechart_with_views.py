@@ -9,7 +9,7 @@ import altair as alt
 
 # Instantiate DataApp
 app = sa.dataApp()
-app.title("Linechart from parquet file")
+app.title("Linechart with views")
 
 # Load data from csv
 dataset = app.sandbox.from_csv('dataset',['../Resources/mitdb102.csv'], has_header=True, skip_rows=1).limit(20000,200000).execute().to_pandas()
@@ -20,8 +20,8 @@ dataset['End']=577.5
 # Use for large datasets
 alt.data_transformers.enable("vegafusion")
 ac = alt.Chart(dataset, width="container").mark_line().encode(
-    x='seconds',
-    y='mV_1'
+    x=alt.X('seconds', axis=alt.Axis(title="Seconds")) ,
+    y=alt.X('mV_1', axis=alt.Axis(title="mV"))
 ).interactive(bind_y=False)
 
 view = alt.Chart(dataset).mark_rect(color='#FF0000',opacity=0.005).encode(
@@ -31,6 +31,3 @@ view = alt.Chart(dataset).mark_rect(color='#FF0000',opacity=0.005).encode(
     y2=alt.value(300))
 
 app.simplechart(spec=(ac+view).to_json(format="vega"), type="Altair")
-
-if __name__ == '__main__':
-    sa.serve(app, __file__)

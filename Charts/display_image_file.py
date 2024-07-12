@@ -4,13 +4,10 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-from shapelets.apps import dataApp, serve
+from shapelets.apps import dataApp
 
 # Create a data app
 app = dataApp()
 
 # Create an image widget
 img = app.image(src="../Resources/hello.jpg")
-
-if __name__ == '__main__':
-    serve(app, __file__)
